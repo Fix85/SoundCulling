@@ -41,12 +41,12 @@ public class SoundCullingModMenu implements ModMenuApi {
             List<Map.Entry<ResourceKey<SoundEvent>, SoundEvent>> sounds = new ArrayList<>(
                     BuiltInRegistries.SOUND_EVENT.entrySet()
             );
-            sounds.sort(Comparator.comparing(entry -> entry.getKey().location().getPath()));
+            sounds.sort(Comparator.comparing(entry -> entry.getKey().identifier().getPath()));
 
             // Individual sound toggles (logically overridden when blockAll is active)
             for (Map.Entry<ResourceKey<SoundEvent>, SoundEvent> entry : sounds) {
-                String idStr = entry.getKey().location().toString();
-                String path = entry.getKey().location().getPath();
+                String idStr = entry.getKey().identifier().toString();
+                String path = entry.getKey().identifier().getPath();
 
                 String name = path.replace('_', ' ').replace('.', ' ');
                 if (!name.isEmpty()) {
