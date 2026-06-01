@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "soundculling",
+  "version": "${version}",
+  "name": "Sound Culling",
+  "description": "Block individual sound events via Mod Menu. / Блокируйте отдельные звуки через Mod Menu.",
+  "authors": [
+    "Fix85"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/soundculling",
+    "sources": "https://github.com/Fix85/SoundCulling",
+    "issues": "https://github.com/Fix85/SoundCulling/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/soundculling/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.fix85.soundculling.SoundCulling"
+    ],
+    "modmenu": [
+      "dev.fix85.soundculling.SoundCullingModMenu"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "soundculling.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

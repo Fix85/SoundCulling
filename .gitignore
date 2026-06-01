@@ -1,0 +1,21 @@
+# Gradle
+.gradle
+build
+/out
+
+# Log files
+*.log
+
+# Project files
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Operating System Files
+Thumbs.db
+Desktop.ini
+
+# Fabric Loom
+run/
+.gradle/loom-cache

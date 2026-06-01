@@ -1,0 +1,6 @@
+{
+  "title.soundculling.config": "Настройка Sound Culling",
+  "category.soundculling.general": "Список звуков",
+  "option.soundculling.block_all": "Заблокировать все звуки",
+  "option.soundculling.block_all.tooltip": "Мгновенно отключить все звуки в игре, игнорируя детальные переключатели ниже."
+}

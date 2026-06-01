@@ -1,0 +1,6 @@
+{
+  "title.soundculling.config": "Sound Culling Configuration",
+  "category.soundculling.general": "Sounds List",
+  "option.soundculling.block_all": "Block All Sounds",
+  "option.soundculling.block_all.tooltip": "Instantly mute every sound event regardless of the individual options below."
+}
