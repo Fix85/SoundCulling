@@ -154,10 +154,9 @@ public class SoundCullingScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Draw the blurred/dark background for the screen
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        // super.render will automatically draw the blurred/dark background since 1.21.2+
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
     }
 
     @Override
@@ -238,14 +237,14 @@ public class SoundCullingScreen extends Screen {
         public void renderContent(GuiGraphics guiGraphics, int index, int top, boolean isMouseOver, float partialTick) {
             int left = getX();
             int width = getWidth();
-            // 2-line rendering: Display Name on top, raw ID below it (drawn with shadow)
-            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFF, true);
+            // 2-line rendering: Display Name on top, raw ID below it (drawn with shadow and correct ARGB alpha)
+            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFFFF, true);
             
             String subText = data.idStr;
             if (subText.length() > 38) {
                 subText = subText.substring(0, 35) + "...";
             }
-            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 4, top + 14, 0x888888, true);
+            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 4, top + 14, 0xFF888888, true);
 
             int mouseX = (int) SoundCullingScreen.this.minecraft.mouseHandler.getScaledXPos(SoundCullingScreen.this.minecraft.getWindow());
             int mouseY = (int) SoundCullingScreen.this.minecraft.mouseHandler.getScaledYPos(SoundCullingScreen.this.minecraft.getWindow());
