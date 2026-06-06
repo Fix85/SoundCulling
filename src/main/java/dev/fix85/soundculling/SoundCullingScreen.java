@@ -186,7 +186,7 @@ public class SoundCullingScreen extends Screen {
 
         @Override
         protected int scrollBarX() {
-            return this.getX() + this.getRowWidth() / 2 + 15;
+            return this.getX() + this.width / 2 + this.getRowWidth() / 2 + 15;
         }
     }
 
