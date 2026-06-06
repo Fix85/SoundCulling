@@ -81,19 +81,19 @@ public class SoundCullingScreen extends Screen {
         searchBox.setResponder(text -> filterSounds());
         addRenderableWidget(searchBox);
 
-        // Sound List
+        // Sound List - increased height per entry to 30 for 2-line layout
         int listHeight = this.height - 45 - 40;
-        soundList = new SoundList(this.minecraft, this.width, listHeight, 45, 24);
+        soundList = new SoundList(this.minecraft, this.width, listHeight, 45, 30);
         addRenderableWidget(soundList);
 
-        // Action Buttons at the bottom
+        // Action Buttons at the bottom - positioned to avoid overlapping
         blockAllButton = Button.builder(Component.literal("Block All"), b -> setAllBlockedStates(true))
-                .bounds(cx - 155, this.height - 32, 72, 20)
+                .bounds(cx - 200, this.height - 32, 72, 20)
                 .build();
         addRenderableWidget(blockAllButton);
 
         unblockAllButton = Button.builder(Component.literal("Unblock All"), b -> setAllBlockedStates(false))
-                .bounds(cx - 80, this.height - 32, 72, 20)
+                .bounds(cx - 124, this.height - 32, 72, 20)
                 .build();
         addRenderableWidget(unblockAllButton);
 
@@ -101,7 +101,7 @@ public class SoundCullingScreen extends Screen {
                     tempBlockAll = !tempBlockAll;
                     b.setMessage(getMasterButtonText());
                 })
-                .bounds(cx - 5, this.height - 32, 80, 20)
+                .bounds(cx - 48, this.height - 32, 100, 20)
                 .build();
         addRenderableWidget(toggleMasterButton);
 
@@ -113,12 +113,12 @@ public class SoundCullingScreen extends Screen {
                     Config.save();
                     onClose();
                 })
-                .bounds(cx + 80, this.height - 32, 36, 20)
+                .bounds(cx + 56, this.height - 32, 70, 20)
                 .build();
         addRenderableWidget(saveButton);
 
         cancelButton = Button.builder(Component.literal("Cancel"), b -> onClose())
-                .bounds(cx + 120, this.height - 32, 40, 20)
+                .bounds(cx + 130, this.height - 32, 70, 20)
                 .build();
         addRenderableWidget(cancelButton);
 
@@ -203,7 +203,7 @@ public class SoundCullingScreen extends Screen {
                         data.blocked = !data.blocked;
                         b.setMessage(getToggleText());
                     })
-                    .bounds(0, 0, 60, 20)
+                    .bounds(0, 0, 75, 20)
                     .build();
 
             this.playBtn = Button.builder(Component.literal("▶"), b -> {
@@ -236,24 +236,24 @@ public class SoundCullingScreen extends Screen {
         public void renderContent(GuiGraphics guiGraphics, int index, int top, boolean isMouseOver, float partialTick) {
             int left = getX();
             int width = getWidth();
-            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 6, 0xFFFFFF);
+            // 2-line rendering: Display Name on top, raw ID below it
+            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFF);
             
-            // Draw a subtle sub-label with raw sound ID
             String subText = data.idStr;
-            if (subText.length() > 30) {
-                subText = subText.substring(0, 27) + "...";
+            if (subText.length() > 38) {
+                subText = subText.substring(0, 35) + "...";
             }
-            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 140, top + 6, 0x888888);
+            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 4, top + 14, 0x888888);
 
             int mouseX = (int) SoundCullingScreen.this.minecraft.mouseHandler.getScaledXPos(SoundCullingScreen.this.minecraft.getWindow());
             int mouseY = (int) SoundCullingScreen.this.minecraft.mouseHandler.getScaledYPos(SoundCullingScreen.this.minecraft.getWindow());
 
-            this.playBtn.setX(left + width - 90);
-            this.playBtn.setY(top + 2);
+            this.playBtn.setX(left + width - 100);
+            this.playBtn.setY(top + 5);
             this.playBtn.render(guiGraphics, mouseX, mouseY, partialTick);
 
-            this.toggleBtn.setX(left + width - 65);
-            this.toggleBtn.setY(top + 2);
+            this.toggleBtn.setX(left + width - 75);
+            this.toggleBtn.setY(top + 5);
             this.toggleBtn.render(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
