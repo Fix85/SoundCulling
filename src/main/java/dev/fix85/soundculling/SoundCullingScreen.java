@@ -154,6 +154,8 @@ public class SoundCullingScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // Draw the blurred/dark background for the screen
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
     }
@@ -234,14 +236,14 @@ public class SoundCullingScreen extends Screen {
 
         @Override
         public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            // 2-line rendering: Display Name on top, raw ID below it
-            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFF);
+            // 2-line rendering: Display Name on top, raw ID below it (drawn with shadow)
+            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFF, true);
             
             String subText = data.idStr;
             if (subText.length() > 38) {
                 subText = subText.substring(0, 35) + "...";
             }
-            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 4, top + 14, 0x888888);
+            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 4, top + 14, 0x888888, true);
 
             this.playBtn.setX(left + width - 100);
             this.playBtn.setY(top + 5);
