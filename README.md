@@ -1,5 +1,4 @@
-<a id="english"></a>
-# Sound Culling
+# <a name="english"></a>Sound Culling
 
 [![Build](https://github.com/Fix85/SoundCulling/actions/workflows/build.yml/badge.svg)](https://github.com/Fix85/SoundCulling/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -50,8 +49,7 @@ Released under the [MIT License](LICENSE).
 
 ---
 
-<a id="russian"></a>
-## Русский
+## <a name="russian"></a>Русский
 
 Клиентский мод на Fabric для Minecraft, позволяющий блокировать отдельные звуки
 прямо в игре. Заглушайте раздражающие или ненужные звуки (мобов, блоков, интерфейса)
