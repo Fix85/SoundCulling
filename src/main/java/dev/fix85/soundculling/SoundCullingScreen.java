@@ -2,7 +2,7 @@ package dev.fix85.soundculling;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -193,10 +193,10 @@ public class SoundCullingScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // super.render will automatically draw the blurred/dark background since 1.21.2+
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
+    public void extractRenderState(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
+        // 26.x deferred render: widgets/background are extracted by super; we just add the title.
+        super.extractRenderState(extractor, mouseX, mouseY, partialTick);
+        extractor.centeredText(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
     }
 
     @Override
@@ -276,10 +276,9 @@ public class SoundCullingScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovering, float partialTick) {
-            // NOTE: in 1.21.11 the two ints passed to renderContent are mouseX / mouseY,
-            // NOT the entry index / top. Use the entry's own geometry for positioning,
-            // otherwise the row contents track the cursor instead of staying on the row.
+        public void extractContent(GuiGraphicsExtractor extractor, int mouseX, int mouseY, boolean hovering, float partialTick) {
+            // 26.x deferred render: the two ints are mouseX / mouseY, not index / top.
+            // Position via the entry's own geometry so the row contents stay on the row.
             int left = getX();
             int top = getY();
             int width = getWidth();
@@ -287,19 +286,19 @@ public class SoundCullingScreen extends Screen {
             int playX = left + width - 114;
             int textRight = playX - 4;
 
-            // 2-line rendering: localized display name on top, raw id below it (drawn with shadow).
-            guiGraphics.drawString(SoundCullingScreen.this.font,
+            // 2-line layout: localized display name on top, raw id below it (drawn with shadow).
+            extractor.text(SoundCullingScreen.this.font,
                     clip(data.displayName, textRight - (left + 4)), left + 4, top + 4, 0xFFFFFFFF, true);
-            guiGraphics.drawString(SoundCullingScreen.this.font,
+            extractor.text(SoundCullingScreen.this.font,
                     clip(data.idStr, textRight - (left + 4)), left + 4, top + 16, 0xFF888888, true);
 
             this.playBtn.setX(playX);
             this.playBtn.setY(top + 5);
-            this.playBtn.render(guiGraphics, mouseX, mouseY, partialTick);
+            this.playBtn.extractRenderState(extractor, mouseX, mouseY, partialTick);
 
             this.toggleBtn.setX(left + width - 90);
             this.toggleBtn.setY(top + 5);
-            this.toggleBtn.render(guiGraphics, mouseX, mouseY, partialTick);
+            this.toggleBtn.extractRenderState(extractor, mouseX, mouseY, partialTick);
         }
 
         // Trim a string with an ellipsis so it fits within maxWidth pixels.
