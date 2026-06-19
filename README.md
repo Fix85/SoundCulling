@@ -8,8 +8,6 @@ A client-side Fabric mod for Minecraft that lets you block individual sound even
 in-game. Mute annoying, spammy, or unnecessary sounds (specific mobs, blocks, or UI sounds)
 without touching your resource packs or volume sliders.
 
-> [🇬🇧 English](#sound-culling) · [🇷🇺 Русский](#ru)
-
 ## Features
 - **Dynamic sound registry** — lists every registered sound event, including ones added by other mods.
 - **Localized names** — each sound shows its in-game subtitle in your selected language (English, Russian, …), with the raw id underneath.
@@ -49,7 +47,7 @@ Released under the [MIT License](LICENSE).
 
 ---
 
-## RU / Русский
+## Русский
 
 Клиентский мод на Fabric для Minecraft, позволяющий блокировать отдельные звуки
 прямо в игре. Заглушайте раздражающие или ненужные звуки (мобов, блоков, интерфейса)
