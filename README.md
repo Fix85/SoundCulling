@@ -1,15 +1,15 @@
+<a id="english"></a>
 # Sound Culling
 
 [![Build](https://github.com/Fix85/SoundCulling/actions/workflows/build.yml/badge.svg)](https://github.com/Fix85/SoundCulling/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Minecraft](https://img.shields.io/badge/Minecraft-1.21.11-brightgreen)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue)
 
-A client-side Fabric mod for Minecraft 1.21.11 that lets you block individual sound events
+A client-side Fabric mod for Minecraft that lets you block individual sound events
 in-game. Mute annoying, spammy, or unnecessary sounds (specific mobs, blocks, or UI sounds)
 without touching your resource packs or volume sliders.
 
-> 🇬🇧 English · [🇷🇺 Русский](#русский)
+> [🇬🇧 English](#english) · [🇷🇺 Русский](#russian)
 
 ## Features
 - **Dynamic sound registry** — lists every registered sound event, including ones added by other mods.
@@ -21,16 +21,16 @@ without touching your resource packs or volume sliders.
 - **Lightweight** — blocked sounds are cancelled before they ever reach the sound engine.
 
 ## Requirements
-- **Minecraft** 1.21.11
-- **Fabric Loader** `>=0.18.4`
+- **Minecraft** (supported versions list on Modrinth)
+- **Fabric Loader** (compatible version)
 - **Fabric API**
 - **Cloth Config API** — bundled inside the jar.
 - **Mod Menu** — recommended, used to open the config screen.
 
 ## Installation
-1. Install [Fabric Loader](https://fabricmc.net/use/) for Minecraft 1.21.11.
+1. Install [Fabric Loader](https://fabricmc.net/use/) for Minecraft.
 2. Drop the following into your `mods` folder:
-   - `soundculling-*.jar` (from [Releases](https://github.com/Fix85/SoundCulling/releases))
+   - `soundculling-*.jar` (from [Releases](https://github.com/Fix85/SoundCulling/releases) or Modrinth)
    - [Fabric API](https://modrinth.com/mod/fabric-api)
    - [Mod Menu](https://modrinth.com/mod/modmenu) *(recommended)*
 3. Launch the game and open **Mods → Sound Culling → Config**.
@@ -50,9 +50,10 @@ Released under the [MIT License](LICENSE).
 
 ---
 
+<a id="russian"></a>
 ## Русский
 
-Клиентский мод на Fabric для Minecraft 1.21.11, позволяющий блокировать отдельные звуки
+Клиентский мод на Fabric для Minecraft, позволяющий блокировать отдельные звуки
 прямо в игре. Заглушайте раздражающие или ненужные звуки (мобов, блоков, интерфейса)
 без правки ресурс-паков и ползунков громкости.
 
@@ -66,16 +67,16 @@ Released under the [MIT License](LICENSE).
 - **Лёгкость** — заблокированные звуки отменяются до попадания в звуковой движок.
 
 ### Требования
-- **Minecraft** 1.21.11
-- **Fabric Loader** `>=0.18.4`
+- **Minecraft** (список поддерживаемых версий смотрите в разделе «Версии» на Modrinth)
+- **Fabric Loader** (совместимая версия)
 - **Fabric API**
 - **Cloth Config API** — встроен в jar.
 - **Mod Menu** — рекомендуется, открывает экран настроек.
 
 ### Установка
-1. Установите [Fabric Loader](https://fabricmc.net/use/) для Minecraft 1.21.11.
+1. Установите [Fabric Loader](https://fabricmc.net/use/) for Minecraft.
 2. Поместите в папку `mods`:
-   - `soundculling-*.jar` (из раздела [Releases](https://github.com/Fix85/SoundCulling/releases))
+   - `soundculling-*.jar` (из раздела [Releases](https://github.com/Fix85/SoundCulling/releases) или с Modrinth)
    - [Fabric API](https://modrinth.com/mod/fabric-api)
    - [Mod Menu](https://modrinth.com/mod/modmenu) *(рекомендуется)*
 3. Запустите игру и откройте **Моды → Sound Culling → Настройки**.
