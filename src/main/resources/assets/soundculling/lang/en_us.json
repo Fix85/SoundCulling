@@ -2,5 +2,15 @@
   "title.soundculling.config": "Sound Culling Configuration",
   "category.soundculling.general": "Sounds List",
   "option.soundculling.block_all": "Block All Sounds",
-  "option.soundculling.block_all.tooltip": "Instantly mute every sound event regardless of the individual options below."
+  "option.soundculling.block_all.tooltip": "Instantly mute every sound event regardless of the individual options below.",
+  "soundculling.search.hint": "Search sounds...",
+  "soundculling.button.block_all": "Block All",
+  "soundculling.button.unblock_all": "Unblock All",
+  "soundculling.button.master": "Block All: %s",
+  "soundculling.button.save": "Save",
+  "soundculling.button.cancel": "Cancel",
+  "soundculling.state.on": "ON",
+  "soundculling.state.off": "OFF",
+  "soundculling.state.blocked": "Blocked",
+  "soundculling.state.allowed": "Allowed"
 }

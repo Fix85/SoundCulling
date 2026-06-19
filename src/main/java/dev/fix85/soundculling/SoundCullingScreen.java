@@ -1,5 +1,6 @@
 package dev.fix85.soundculling;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -9,6 +10,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -36,7 +39,10 @@ public class SoundCullingScreen extends Screen {
 
     private static class SoundEntryData {
         final String idStr;
+        // Localized, human-readable name (sound subtitle if available, otherwise a prettified id)
         final String displayName;
+        // Lower-cased haystack used for the search box (id + display name)
+        final String searchKey;
         boolean blocked;
         final SoundEvent soundEvent;
 
@@ -45,6 +51,7 @@ public class SoundCullingScreen extends Screen {
             this.displayName = displayName;
             this.blocked = blocked;
             this.soundEvent = soundEvent;
+            this.searchKey = (idStr + ' ' + displayName).toLowerCase(Locale.ROOT);
         }
     }
 
@@ -53,6 +60,9 @@ public class SoundCullingScreen extends Screen {
         this.parent = parent;
         this.tempBlockAll = Config.get().blockAll;
 
+        // The sound manager lets us resolve localized subtitles (respects the active language).
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
         // Fetch and cache all registered sounds
         List<Map.Entry<net.minecraft.resources.ResourceKey<SoundEvent>, SoundEvent>> registryEntries = new ArrayList<>(
                 BuiltInRegistries.SOUND_EVENT.entrySet()
@@ -60,16 +70,33 @@ public class SoundCullingScreen extends Screen {
         registryEntries.sort(Comparator.comparing(entry -> entry.getKey().identifier().getPath()));
 
         for (Map.Entry<net.minecraft.resources.ResourceKey<SoundEvent>, SoundEvent> entry : registryEntries) {
-            String idStr = entry.getKey().identifier().toString();
-            String path = entry.getKey().identifier().getPath();
+            Identifier location = entry.getKey().identifier();
+            String idStr = location.toString();
 
-            String name = path.replace('_', ' ').replace('.', ' ');
-            if (!name.isEmpty()) {
-                name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
-            }
+            String displayName = resolveDisplayName(soundManager, location);
             boolean isBlocked = Config.get().soundStates.getOrDefault(idStr, false);
-            allSounds.add(new SoundEntryData(idStr, name, isBlocked, entry.getValue()));
+            allSounds.add(new SoundEntryData(idStr, displayName, isBlocked, entry.getValue()));
         }
+    }
+
+    // Prefer the sound's localized subtitle; fall back to a prettified version of the id path.
+    private static String resolveDisplayName(SoundManager soundManager, Identifier location) {
+        WeighedSoundEvents soundEvent = soundManager.getSoundEvent(location);
+        if (soundEvent != null) {
+            Component subtitle = soundEvent.getSubtitle();
+            if (subtitle != null) {
+                String localized = subtitle.getString();
+                if (localized != null && !localized.isEmpty()) {
+                    return localized;
+                }
+            }
+        }
+
+        String name = location.getPath().replace('_', ' ').replace('.', ' ');
+        if (!name.isEmpty()) {
+            name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+        }
+        return name;
     }
 
     @Override
@@ -77,7 +104,8 @@ public class SoundCullingScreen extends Screen {
         int cx = this.width / 2;
 
         // Search Box
-        searchBox = new EditBox(this.font, cx - 110, 22, 220, 18, Component.literal("Search"));
+        searchBox = new EditBox(this.font, cx - 110, 22, 220, 18, Component.translatable("soundculling.search.hint"));
+        searchBox.setHint(Component.translatable("soundculling.search.hint"));
         searchBox.setResponder(text -> filterSounds());
         addRenderableWidget(searchBox);
 
@@ -86,26 +114,35 @@ public class SoundCullingScreen extends Screen {
         soundList = new SoundList(this.minecraft, this.width, listHeight, 45, 30);
         addRenderableWidget(soundList);
 
-        // Action Buttons at the bottom - positioned to avoid overlapping
-        blockAllButton = Button.builder(Component.literal("Block All"), b -> setAllBlockedStates(true))
-                .bounds(cx - 200, this.height - 32, 72, 20)
+        // Bottom action bar: lay buttons out centered so longer (e.g. localized) labels still fit.
+        int btnY = this.height - 32;
+        int gap = 6;
+        int wBlock = 80, wUnblock = 95, wMaster = 110, wSave = 75, wCancel = 65;
+        int totalWidth = wBlock + wUnblock + wMaster + wSave + wCancel + gap * 4;
+        int x = cx - totalWidth / 2;
+
+        blockAllButton = Button.builder(Component.translatable("soundculling.button.block_all"), b -> setAllBlockedStates(true))
+                .bounds(x, btnY, wBlock, 20)
                 .build();
         addRenderableWidget(blockAllButton);
+        x += wBlock + gap;
 
-        unblockAllButton = Button.builder(Component.literal("Unblock All"), b -> setAllBlockedStates(false))
-                .bounds(cx - 124, this.height - 32, 72, 20)
+        unblockAllButton = Button.builder(Component.translatable("soundculling.button.unblock_all"), b -> setAllBlockedStates(false))
+                .bounds(x, btnY, wUnblock, 20)
                 .build();
         addRenderableWidget(unblockAllButton);
+        x += wUnblock + gap;
 
         toggleMasterButton = Button.builder(getMasterButtonText(), b -> {
                     tempBlockAll = !tempBlockAll;
                     b.setMessage(getMasterButtonText());
                 })
-                .bounds(cx - 48, this.height - 32, 100, 20)
+                .bounds(x, btnY, wMaster, 20)
                 .build();
         addRenderableWidget(toggleMasterButton);
+        x += wMaster + gap;
 
-        saveButton = Button.builder(Component.literal("Save"), b -> {
+        saveButton = Button.builder(Component.translatable("soundculling.button.save"), b -> {
                     Config.get().blockAll = tempBlockAll;
                     for (SoundEntryData data : allSounds) {
                         Config.get().setSoundBlocked(data.idStr, data.blocked);
@@ -113,12 +150,13 @@ public class SoundCullingScreen extends Screen {
                     Config.save();
                     onClose();
                 })
-                .bounds(cx + 56, this.height - 32, 70, 20)
+                .bounds(x, btnY, wSave, 20)
                 .build();
         addRenderableWidget(saveButton);
+        x += wSave + gap;
 
-        cancelButton = Button.builder(Component.literal("Cancel"), b -> onClose())
-                .bounds(cx + 130, this.height - 32, 70, 20)
+        cancelButton = Button.builder(Component.translatable("soundculling.button.cancel"), b -> onClose())
+                .bounds(x, btnY, wCancel, 20)
                 .build();
         addRenderableWidget(cancelButton);
 
@@ -126,14 +164,15 @@ public class SoundCullingScreen extends Screen {
     }
 
     private Component getMasterButtonText() {
-        String state = tempBlockAll ? "§aON" : "§cOFF";
-        return Component.literal("Block All: " + state);
+        Component state = Component.translatable(tempBlockAll ? "soundculling.state.on" : "soundculling.state.off")
+                .withStyle(tempBlockAll ? ChatFormatting.GREEN : ChatFormatting.RED);
+        return Component.translatable("soundculling.button.master", state);
     }
 
     private void setAllBlockedStates(boolean blocked) {
         String query = searchBox.getValue().toLowerCase(Locale.ROOT);
         for (SoundEntryData data : allSounds) {
-            if (query.isEmpty() || data.idStr.toLowerCase(Locale.ROOT).contains(query) || data.displayName.toLowerCase(Locale.ROOT).contains(query)) {
+            if (query.isEmpty() || data.searchKey.contains(query)) {
                 data.blocked = blocked;
             }
         }
@@ -144,12 +183,13 @@ public class SoundCullingScreen extends Screen {
         String query = searchBox.getValue().toLowerCase(Locale.ROOT);
         soundList.clearEntries();
         for (SoundEntryData data : allSounds) {
-            if (query.isEmpty() || data.idStr.toLowerCase(Locale.ROOT).contains(query) || data.displayName.toLowerCase(Locale.ROOT).contains(query)) {
+            if (query.isEmpty() || data.searchKey.contains(query)) {
                 soundList.addEntry(new SoundListEntry(data));
             }
         }
         // Reset scroll position when filter changes to avoid empty list views
         soundList.setScrollAmount(0);
+        soundList.updateSizeAndPosition(soundList.getWidth(), soundList.getHeight(), soundList.getY());
     }
 
     @Override
@@ -204,7 +244,7 @@ public class SoundCullingScreen extends Screen {
                         data.blocked = !data.blocked;
                         b.setMessage(getToggleText());
                     })
-                    .bounds(0, 0, 75, 20)
+                    .bounds(0, 0, 90, 20)
                     .build();
 
             this.playBtn = Button.builder(Component.literal("▶"), b -> {
@@ -220,7 +260,9 @@ public class SoundCullingScreen extends Screen {
         }
 
         private Component getToggleText() {
-            return data.blocked ? Component.literal("§cBlocked") : Component.literal("§aAllowed");
+            return data.blocked
+                    ? Component.translatable("soundculling.state.blocked").withStyle(ChatFormatting.RED)
+                    : Component.translatable("soundculling.state.allowed").withStyle(ChatFormatting.GREEN);
         }
 
         @Override
@@ -234,28 +276,39 @@ public class SoundCullingScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int index, int top, boolean isMouseOver, float partialTick) {
+        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovering, float partialTick) {
+            // NOTE: in 1.21.11 the two ints passed to renderContent are mouseX / mouseY,
+            // NOT the entry index / top. Use the entry's own geometry for positioning,
+            // otherwise the row contents track the cursor instead of staying on the row.
             int left = getX();
+            int top = getY();
             int width = getWidth();
-            // 2-line rendering: Display Name on top, raw ID below it (drawn with shadow and correct ARGB alpha)
-            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFFFF, true);
-            
-            String subText = data.idStr;
-            if (subText.length() > 38) {
-                subText = subText.substring(0, 35) + "...";
-            }
-            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 4, top + 14, 0xFF888888, true);
 
-            int mouseX = (int) SoundCullingScreen.this.minecraft.mouseHandler.getScaledXPos(SoundCullingScreen.this.minecraft.getWindow());
-            int mouseY = (int) SoundCullingScreen.this.minecraft.mouseHandler.getScaledYPos(SoundCullingScreen.this.minecraft.getWindow());
+            int playX = left + width - 114;
+            int textRight = playX - 4;
 
-            this.playBtn.setX(left + width - 100);
+            // 2-line rendering: localized display name on top, raw id below it (drawn with shadow).
+            guiGraphics.drawString(SoundCullingScreen.this.font,
+                    clip(data.displayName, textRight - (left + 4)), left + 4, top + 4, 0xFFFFFFFF, true);
+            guiGraphics.drawString(SoundCullingScreen.this.font,
+                    clip(data.idStr, textRight - (left + 4)), left + 4, top + 16, 0xFF888888, true);
+
+            this.playBtn.setX(playX);
             this.playBtn.setY(top + 5);
             this.playBtn.render(guiGraphics, mouseX, mouseY, partialTick);
 
-            this.toggleBtn.setX(left + width - 75);
+            this.toggleBtn.setX(left + width - 90);
             this.toggleBtn.setY(top + 5);
             this.toggleBtn.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
+
+        // Trim a string with an ellipsis so it fits within maxWidth pixels.
+        private String clip(String text, int maxWidth) {
+            var font = SoundCullingScreen.this.font;
+            if (font.width(text) <= maxWidth) {
+                return text;
+            }
+            return font.plainSubstrByWidth(text, maxWidth - font.width("...")) + "...";
         }
     }
 }
