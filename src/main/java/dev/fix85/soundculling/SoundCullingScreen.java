@@ -81,9 +81,9 @@ public class SoundCullingScreen extends Screen {
         searchBox.setResponder(text -> filterSounds());
         addRenderableWidget(searchBox);
 
-        // Sound List - increased height per entry to 30 for 2-line layout
-        int listHeight = this.height - 45 - 40;
-        soundList = new SoundList(this.minecraft, this.width, listHeight, 45, 30);
+        // Sound List - increased height per entry to 30 for 2-line layout.
+        // 1.20.1 uses the (mc, width, height, top, bottom, itemHeight) constructor.
+        soundList = new SoundList(this.minecraft, this.width, this.height, 45, this.height - 40, 30);
         addRenderableWidget(soundList);
 
         // Action Buttons at the bottom - positioned to avoid overlapping
@@ -154,8 +154,8 @@ public class SoundCullingScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Draw the blurred/dark background for the screen
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        // Draw the dark background for the screen (single-arg form in 1.20.1)
+        this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
     }
@@ -168,8 +168,8 @@ public class SoundCullingScreen extends Screen {
     }
 
     private class SoundList extends ContainerObjectSelectionList<SoundListEntry> {
-        public SoundList(Minecraft minecraft, int width, int height, int y, int itemHeight) {
-            super(minecraft, width, height, y, itemHeight);
+        public SoundList(Minecraft minecraft, int width, int height, int top, int bottom, int itemHeight) {
+            super(minecraft, width, height, top, bottom, itemHeight);
         }
 
         public void clearEntries() {
@@ -188,7 +188,9 @@ public class SoundCullingScreen extends Screen {
 
         @Override
         protected int getScrollbarPosition() {
-            return this.getX() + this.width / 2 + this.getRowWidth() / 2 + 15;
+            // The list spans the full screen width (left edge at 0), so the rows are
+            // centred on width/2. Place the scrollbar just right of the rows.
+            return this.width / 2 + this.getRowWidth() / 2 + 15;
         }
     }
 
