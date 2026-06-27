@@ -1,6 +1,5 @@
 # Sound Culling
 
-[![Build](https://github.com/Fix85/SoundCulling/actions/workflows/build.yml/badge.svg)](https://github.com/Fix85/SoundCulling/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue)
 
