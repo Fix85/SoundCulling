@@ -157,7 +157,7 @@ public class SoundCullingScreen extends Screen {
         // super.render draws the blurred/dark background itself since 1.21.2+
         // (calling renderBackground again would blur twice -> crash on 1.21.5+)
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
     }
 
     @Override
@@ -236,14 +236,15 @@ public class SoundCullingScreen extends Screen {
 
         @Override
         public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            // 2-line rendering: Display Name on top, raw ID below it (drawn with shadow)
-            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFF, true);
-            
+            // 2-line rendering: Display Name on top, raw ID below it (drawn with shadow).
+            // Colors must be ARGB with full alpha since 1.21.5+ (0xFFFFFF would be transparent).
+            guiGraphics.drawString(SoundCullingScreen.this.font, data.displayName, left + 4, top + 2, 0xFFFFFFFF, true);
+
             String subText = data.idStr;
             if (subText.length() > 38) {
                 subText = subText.substring(0, 35) + "...";
             }
-            guiGraphics.drawString(SoundCullingScreen.this.font, "§8" + subText, left + 4, top + 14, 0x888888, true);
+            guiGraphics.drawString(SoundCullingScreen.this.font, subText, left + 4, top + 14, 0xFF888888, true);
 
             this.playBtn.setX(left + width - 100);
             this.playBtn.setY(top + 5);
