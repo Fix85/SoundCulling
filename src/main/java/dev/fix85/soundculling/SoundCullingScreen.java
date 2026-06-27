@@ -154,8 +154,11 @@ public class SoundCullingScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Draw the dark background for the screen (single-arg form in 1.20.1)
+        // Draw the dark background for the screen (single-arg form in 1.20.1).
+        // In-world this only draws a faint gradient, so add a solid dark backdrop
+        // behind the widgets - otherwise the screen (and the search box) looks see-through.
         this.renderBackground(guiGraphics);
+        guiGraphics.fill(0, 0, this.width, this.height, 0xE0101010);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
     }
