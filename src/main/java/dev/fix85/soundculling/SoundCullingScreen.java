@@ -154,8 +154,8 @@ public class SoundCullingScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Draw the blurred/dark background for the screen
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        // super.render draws the blurred/dark background itself since 1.21.2+
+        // (calling renderBackground again would blur twice -> crash on 1.21.5+)
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
     }
