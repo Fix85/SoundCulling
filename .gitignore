@@ -19,3 +19,8 @@ Desktop.ini
 # Fabric Loom
 run/
 .gradle/loom-cache
+
+# Local-only publishing scripts (must not be committed)
+publish_mod.py
+publish_new_project.py
+backup_jars/
