@@ -202,7 +202,8 @@ public class SoundCullingScreen extends Screen {
     @Override
     public void onClose() {
         if (this.minecraft != null) {
-            this.minecraft.setScreen(parent);
+            // Minecraft.setScreen was renamed to setScreenAndShow in 26.2
+            this.minecraft.setScreenAndShow(parent);
         }
     }
 
